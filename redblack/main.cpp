@@ -7,7 +7,6 @@ class RBT
 {
 private:
 	int value;
-	//black is false; red is true;
 	bool color;
 	RBT *left;
 	RBT *right;
@@ -20,6 +19,7 @@ public:
 	{
 		this->parent = parent;
 		this->value = value;
+		//black is false; red is true;
 		this->color = true;
 		this->left = nullptr;
 		this->right = nullptr;
@@ -32,7 +32,7 @@ public:
 		{
 			switch (this->siding(node->value - value))
 			{
-			case true:
+			case false:
 				if (node->value - value == 0)
 				{
 					return this;
@@ -43,7 +43,7 @@ public:
 				}
 
 				break;
-			case false:
+			case true:
 				node = node->left;
 
 				break;
@@ -62,28 +62,32 @@ public:
 		{
 			switch (this->siding(node->value - value))
 			{
-			case 1:
-				if (node->right != nullptr)
+			case false:
+				if (node->right->value != -1)
 				{
 					node = node->right;
 				}
 				else
 				{
-					node->right = new RBT(value, node);
+					node->right->value = value;
+					node->right->right = new RBT(-1, node->right);
+					node->right->left = new RBT(-1, node->right);
 					rePosition(node->right);
 					return;
 				}
 
 				break;
 
-			case 0:
-				if (node->left != nullptr)
+			case true:
+				if (node->left->value != -1)
 				{
 					node = node->left;
 				}
 				else
 				{
-					node->left = new RBT(value, node);
+					node->left->value = value;
+					node->left->right = new RBT(-1, node->left);
+					node->left->left = new RBT(-1, node->left);
 					rePosition(node->left);
 					return;
 				}
@@ -100,71 +104,80 @@ public:
 	// returns the root of the tree.
 	void rePosition(RBT *node)
 	{
+		// root node;
 		if (node->parent == nullptr)
 		{
 			node->color = false;
+
+			if (this->left == nullptr)
+			{
+				this->left = new RBT(-1, this);
+			}
+
+			if (this->right == nullptr)
+			{
+				this->right = new RBT(-1, this);
+			}
+
 			return;
 		}
 
-		// Single block code returns itself.
-		if (node->parent != nullptr)
+		if (!node->parent->color)
 		{
-			if (!node->parent->color)
-			{
-				return;
-			}
+			return;
 		}
 
 		RBT *uncle = node->parent->parent->findOtherNode(node->parent->value);
 
-		// father is a leaf together with the child.
-		if (uncle == nullptr)
+		// Nullptr is black.
+		if (uncle->value == -1)
 		{
 			uncle->color = false;
 		}
 
-		// Single block code returns itself.
 		if ((node->parent->color) && (uncle->color))
 		{
-
 			uncle->color = false;
 			node->parent->color = false;
+			node->parent->parent->color = true;
 			node->rePosition(node->parent->parent);
-			//	cout << uncle->value << uncle->color << endl;
 			return;
 		}
 
 		if ((node->color) && (node->parent->color) && (!uncle->color))
 		{
 			int child_pos = node->findPosition();
-			int parent_pos = node->findPosition();
+			int parent_pos = node->parent->findPosition();
 
+			cout << child_pos << " x " << parent_pos << endl;
 			// left_left case:
 			if ((child_pos == 0) && (parent_pos == 0))
 			{
-				node->parent->parent->rotateRight();
-				RBT *sibling = node->parent->findOtherNode(node->value);
-				swapColor(node->parent, sibling);
+				node->parent->parent->rotateRight(node->parent);
+				swapColor(node->parent, node->parent->right);
 			}
 
+			// left_right case:
 			if ((child_pos == 1) && (parent_pos == 0))
 			{
-				node->parent->rotateLeft();
-				node->parent->rotateRight();
+				node->parent->rotateLeft(node);
+
+				node->parent->rotateRight(node);
 				swapColor(node, node->right);
 			}
 
+			// right_right case:
 			if ((child_pos == 1) && (parent_pos == 1))
 			{
-				node->parent->parent->rotateLeft();
-				RBT *sibling = node->parent->findOtherNode(node->value);
-				swapColor(node->parent, sibling);
+				node->parent->parent->rotateLeft(node->parent);
+				swapColor(node->parent, node->parent->left);
 			}
 
+			// left_right case:
 			if ((child_pos == 0) && (parent_pos == 1))
 			{
-				node->parent->rotateRight();
-				node->parent->rotateLeft();
+				node->parent->rotateRight(node);
+				node->parent->rotateLeft(node);
 				swapColor(node, node->left);
 			}
 		}
@@ -173,41 +186,57 @@ public:
 	}
 
 	// this should be perform by the right node;
-	void rotateRight()
+	void rotateRight(RBT *p)
 	{
-		RBT *left_node = this->left;
 
-		this->left = this->left->right;
+		p->parent = this->parent;
+		if (this->parent != nullptr)
+		{
+			if (!this->siding(this->parent->value - this->value))
+			{
+				this->parent->right = p;
+			}
+			else
+			{
+				this->parent->left = p;
+			}
+		}
 
-		left_node->parent = this->parent;
+		this->left = p->right;
+		p->right->parent = this;
 
-		left_node->right = this;
+		this->parent = p;
+		p->right = this;
 	}
 
-	// this should be perform by the right node;
-	void rotateLeft()
+	// "this" is the node that being called. P is the replaced node;
+	void rotateLeft(RBT *p)
 	{
-		RBT *right_node = this->right;
+		p->parent = this->parent;
+		if (!this->siding(this->parent->value - this->value))
+		{
+			this->parent->right = p;
+		}
+		else
+		{
+			this->parent->left = p;
+		}
 
-		this->right = this->right->left;
+		this->right = p->left;
+		p->left->parent = this;
 
-		right_node->parent = this->parent;
-
-		right_node->left = this;
-
-		bool color = right_node->color;
-		right_node->color = this->color;
-		this->color = color;
+		this->parent = p;
+		p->left = this;
 	}
 
 	void swapColor(RBT *node_1, RBT *node_2)
 	{
 		bool color = node_1->color;
-		node_1->color = this->color;
-		this->color = color;
+		node_1->color = node_2->color;
+		node_2->color = color;
 	}
 
-	// RBT is a parent and value is a child. Returns the sibling of value Node;
+	// RBT is a parent and value is a child. Returns the sibling of arg value;
 	RBT *findOtherNode(int value)
 	{
 		if (this->left != nullptr)
@@ -256,6 +285,7 @@ public:
 		return 2;
 	}
 
+	// siding tells us if the node is on the right or the left of the parents.
 	int siding(int value)
 	{
 		if (value >= 0)
@@ -277,31 +307,41 @@ public:
 		return node;
 	}
 
-	void deleteNode(int value) {}
-
-	void deleteX(int value) {}
-
-	void print(const string prefix = "", bool isBlack = false)
+	void print()
 	{
+		RBT *r = this->findRoot();
+		r->prints();
+	}
+
+	void prints(const string prefix = "", bool isBlack = false)
+	{
+		if (this->value == -1)
+		{
+			return;
+		}
+
 		cout << prefix << (isBlack ? "R--" : "B--");
 		cout << this->value << endl;
 
 		if (this->left != NULL)
-			this->left->print(prefix + (isBlack ? "|   " : "    "), this->left->color);
+			this->left->prints(prefix + (isBlack ? "|   " : "    "), this->left->color);
 		if (this->right != NULL)
-			this->right->print(prefix + (isBlack ? "|   " : "    "), this->right->color);
+			this->right->prints(prefix + (isBlack ? "|   " : "    "), this->right->color);
 	}
 };
 
 int main()
 {
-	RBT root(10, nullptr);
+	RBT root(20, nullptr);
 	root.rePosition(&root);
 
+	root.addNode(6);
+	root.addNode(8);
+	root.addNode(7);
+	root.addNode(14);
 	root.addNode(5);
-	root.addNode(12);
-	root.addNode(4);
-	root.addNode(3);
+	root.addNode(13);
+	root.addNode(19);
 
 	root.print();
 }
