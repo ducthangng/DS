@@ -12,7 +12,7 @@ using namespace std;
 
 // Collision handler: linkedlist - open addressing.
 // Rules: same key - same value is accepted. Push back into linkedlist or move up depends on the next value on open addressing.
-// Insert-last cost: O(n). Insert-first cost: O(1).
+// Insert-last cost: O(m). Insert-first cost: O(1).
 // Retrive cost: O(1). Hashtable.list[(key.hashed.string)] = value. (linkedlist)
 
 // Chaining Hashtable
@@ -178,31 +178,32 @@ public:
 
 int main()
 {
-	Node thang("ducthang", "20");
-	Node replication_1("ducthang", "20");
-	Node replication_2("ducthang", "19");
-	Node replication_3("ducthang_3", "20");
-	Node replication_4("linhdan_1", "12");
-	Node replication_5("god", "100");
-	Node replication_6("bless", "12121");
+	// HashTablev1 or HashTable does not have dynamic creation. It is prepered to used the hashtable v2.
+	// Node thang("ducthang", "20");
+	// Node replication_1("ducthang", "20");
+	// Node replication_2("ducthang", "19");
+	// Node replication_3("ducthang_3", "20");
+	// Node replication_4("linhdan_1", "12");
+	// Node replication_5("god", "100");
+	// Node replication_6("bless", "12121");
 
-	HashTable hash;
+	// HashTable hash;
 
-	hash.addEntry(thang);
-	hash.addEntry(replication_1);
-	hash.addEntry(replication_2);
-	hash.addEntry(replication_3);
-	hash.addEntry(replication_4);
-	hash.addEntry(replication_5);
-	hash.addEntry(replication_6);
+	// hash.addEntry(thang);
+	// hash.addEntry(replication_1);
+	// hash.addEntry(replication_2);
+	// hash.addEntry(replication_3);
+	// hash.addEntry(replication_4);
+	// hash.addEntry(replication_5);
+	// hash.addEntry(replication_6);
 
-	// hash.search("ducthang");
-	hash.print();
+	// // hash.search("ducthang");
+	// hash.print();
 
-	cout << "delete ducthang" << endl;
-	hash.remove(thang);
-	hash.remove(thang);
-	hash.print();
+	// cout << "delete ducthang" << endl;
+	// hash.remove(thang);
+	// hash.remove(thang);
+	// hash.print();
 
 	HashTablev2 hashv2;
 

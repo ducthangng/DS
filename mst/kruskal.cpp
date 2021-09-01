@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// g++ -std=c++11 kruskal.cpp
 // Creating shortcut for an integer pair
 typedef pair<int, int> iPair;
 
@@ -11,15 +12,21 @@ class Graph
 {
 private:
 	vector<pair<int, iPair>> edges;
-	vector<pair<int, int>> kruskal;
+	int kruskal[100];
 	int kruskal_weight;
 	int sumNode;
+	int kruskalNode;
 
 public:
 	Graph(int sumNode)
 	{
 		this->kruskal_weight = 0;
 		this->sumNode = sumNode;
+		this->kruskalNode = 0;
+		for (int i = 0; i < 100; i++)
+		{
+			kruskal[i] = -1;
+		}
 	};
 
 	void AddEdge(int weight, int node_a, int node_b)
@@ -31,8 +38,8 @@ public:
 	{
 		cout << "MST by Kruskal: " << endl;
 
-		// int sum
-		int a[this->edges.size() + 10];
+		int size = this->sumNode;
+		int a[size + 10];
 		sort(this->edges.begin(), this->edges.end());
 
 		vector<pair<int, iPair>>::iterator i;
@@ -42,17 +49,17 @@ public:
 			int edge_a = i->second.first;
 			int edge_b = i->second.second;
 
-			if (this->detectCycle(edge_a, edge_b))
+			// No cycle so we add this to the tree
+			if (!this->detectCycle(edge_a, edge_b))
 			{
-				// No cycle so we add this to the tree
-				this->kruskal.push_back({edge_a, edge_b});
-
+				// Merge cycle together
+				this->MergeEgde(edge_a, edge_b);
 				cout << edge_a << " " << edge_b << "  (" << weight << ")" << endl;
 
 				this->kruskal_weight += weight;
 			}
 
-			if (this->kruskal.size() == this->sumNode - 1)
+			if (this->kruskalNode == this->sumNode)
 			{
 				return this->kruskal_weight;
 			}
@@ -61,37 +68,31 @@ public:
 		return this->kruskal_weight;
 	}
 
-	// False for cycle exist;
-	// Otherwise true;
+	// Return true as a cycle existed
+	// The idea is that each connected edge inside kruskal have the same indexed.
 	bool detectCycle(int egde_a, int egde_b)
 	{
-		int a_invole = 0;
-		int b_invole = 0;
-
-		vector<pair<int, int>>::iterator i;
-		for (i = this->kruskal.begin(); i != this->kruskal.end(); i++)
+		if ((this->kruskal[egde_a] == -2) && (this->kruskal[egde_b] == -2))
 		{
-			int f = i->first;
-			int s = i->second;
-
-			if ((egde_a == f) || (egde_a == s))
-			{
-				a_invole = 1;
-			}
-
-			if ((egde_b == f) || (egde_b == s))
-			{
-				a_invole = 1;
-			}
-
-			if ((b_invole == 1) && (a_invole == 1))
-			{
-				return false;
-			}
+			return true;
 		}
 
-		return true;
+		return false;
 	}
+
+	void MergeEgde(int egde_a, int egde_b)
+	{
+		if (this->kruskal[egde_a] != -2)
+		{
+			this->kruskalNode++;
+			this->kruskal[egde_a] = -2;
+		}
+		if (this->kruskal[egde_b] != -2)
+		{
+			this->kruskalNode++;
+			this->kruskal[egde_b] = -2;
+		}
+	};
 };
 
 int main()
@@ -99,8 +100,10 @@ int main()
 	Graph mst(7);
 
 	mst.AddEdge(1, 1, 2);
+	mst.AddEdge(2, 1, 3);
 	mst.AddEdge(5, 2, 3);
 	mst.AddEdge(4, 2, 4);
+	mst.AddEdge(6, 4, 7);
 	mst.AddEdge(2, 4, 5);
 	mst.AddEdge(4, 4, 6);
 	mst.AddEdge(9, 1, 7);
