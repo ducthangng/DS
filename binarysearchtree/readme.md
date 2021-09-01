@@ -14,6 +14,6 @@ Note that we should find the parent node of the removed node and the child node 
 Complexity: 
 1. Worst case: O(n) -> number of Node.
 2. Average: O(h) -> h is the height of the node.
-3. Searching time: worst case: O(log2n).
-4. Adding time: worst case: O(log2n).
-5. Deleting time: worst case: O(log2n)
+3. Searching time: worst case: log2(n).
+4. Adding time: worst case: log2(n).
+5. Deleting time: worst case: log2(n).
