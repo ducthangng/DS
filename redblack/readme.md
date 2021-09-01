@@ -37,3 +37,5 @@ c. Right Righ Case (RR rotation)
 D. Right Left Case (RL rotation)
 ![rl](./RL.png)
 
+
+Complexity: average time complexity of O(1) and worst-case complexity of O(log n)
