@@ -58,9 +58,10 @@ Output:
 
 
 ---
-### 6. VGU has n students, each has a virtual locker. Each locker can contain an unlimited number of data. Trung is the person in charge of all the locker, that said every student who want to access A STUFF in his locker must goes through Trung. 
-a. What is the most efficient way to Trung to handle all the stuff? Why?
+### 6. VGU has n students, each has a virtual locker. Each locker can contain an unlimited number of data. Trung is the person in charge of all the locker, that said every student who want to access A STUFF in his locker must goes through Trung. Imagine that if all the student cum at Trung at 1 time, Trung's gonna die.
+a. Each locker is denote by the student's name. If Trung knows the locker's owner's name, Trung can find it instantly. What is the best ways for Trung to handle all the locker?
+Give the demonstration for the method.
 
-b. Give the demonstration for the method.
+b. Given that the address of the lockers is a string that do not exceed 10 characters, give a way so that trung can mark each locker's address from the student's name.
 
-c. What is the time complexity for Trung to search for a chunk of data in a locker, known that the on average a locker contain m chunks of data.
+c. What is the time complexity for Trung to search for a chunk of data in a random locker in n chunks, known that the on average a locker contain m chunks of data.
