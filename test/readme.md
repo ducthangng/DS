@@ -32,7 +32,7 @@ int main() {
 
 
 --- 
-### 4. You are given a weighted undirected graph. The vertices are enumerated from 1 to n. Your task is to find the shortest path between the vertex 1 and the vertex n.
+### 4. You are given a weighted directed graph. The vertices are enumerated from 1 to n. Your task is to find the shortest path between the vertex 1 and the vertex n.
 
 The first line contains two integers n and m, where n is the number of vertices and m is the number of edges. Following m lines contain one edge each in form a[i], b[i] and w[i], where a[i], b[i] are edge endpoints and w[i] is the weight of the edge.
 
@@ -58,7 +58,7 @@ Output:
 
 
 ---
-### 6. VGU has n students, each has a virtual locker. Each locker can contain a unlimited number of data. Trung is the person in charge of all the locker, that said every student who want to access A STUFF in his locker must goes through Trung. 
+### 6. VGU has n students, each has a virtual locker. Each locker can contain an unlimited number of data. Trung is the person in charge of all the locker, that said every student who want to access A STUFF in his locker must goes through Trung. 
 a. What is the most efficient way to Trung to handle all the stuff? Why?
 
 b. Give the demonstration for the method.
