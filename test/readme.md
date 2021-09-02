@@ -60,5 +60,7 @@ Output:
 ---
 ### 6. VGU has n students, each has a virtual locker. Each locker can contain a unlimited number of data. Trung is the person in charge of all the locker, that said every student who want to access A STUFF in his locker must goes through Trung. 
 a. What is the most efficient way to Trung to handle all the stuff? Why?
+
 b. Give the demonstration for the method.
+
 c. What is the time complexity for Trung to search for a chunk of data in a locker, known that the on average a locker contain m chunks of data.
