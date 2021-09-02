@@ -155,4 +155,4 @@ int main()
 ```
 
 5. 
-Red Black Tree is more efficient than the Binary Search Tree. The RBTree is a self-balance tree, that is, the height of tree from the first
+Red Black Tree is more efficient than the Binary Search Tree. The RBTree is a self-balance tree, that is, the height of tree from the node from

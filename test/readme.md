@@ -64,4 +64,4 @@ Give the demonstration for the method.
 
 b. Given that the address of the lockers is a string that do not exceed 10 characters, give a way so that trung can mark each locker's address from the student's name.
 
-c. What is the time complexity for Trung to search for a chunk of data in a random locker in n chunks, known that the on average a locker contain m chunks of data.
+c. What is the time complexity for Trung to search for a chunk of data in a random locker in n locker, known that the on average a locker contain m chunks of data.
