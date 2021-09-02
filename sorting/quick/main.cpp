@@ -55,6 +55,11 @@ void quicksortb(int l, int r)
         b[r] = b[i];
         b[i] = t;
 
+        for (int i = 0; i < n; i++)
+        {
+            cout << b[i] << " ";
+        }
+        cout << endl;
         quicksortb(l, i - 1);
         quicksortb(i + 1, r);
     }
