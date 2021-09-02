@@ -58,7 +58,7 @@ Output:
 
 
 ---
-### 6. VGU has n students, each has a virtual locker. Each locker can contain an unlimited number of data. Trung is the person in charge of all the locker, that said every student who want to access A STUFF in his locker must goes through Trung. Imagine that if all the student cum at Trung at 1 time, Trung's gonna die.
+### 6. VGU has n students, each has a virtual locker. Each locker can contain an unlimited number of data. Trung is the person in charge of all the locker, that said every student who want to access A STUFF in his locker must goes through Trung. Imagine that if all the students come at Trung at 1 time, Trung's gonna die.
 a. Each locker is denote by the student's name. If Trung knows the locker's owner's name, Trung can find it instantly. What is the best ways for Trung to handle all the locker?
 Give the demonstration for the method.
 
