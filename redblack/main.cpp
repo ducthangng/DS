@@ -149,7 +149,6 @@ public:
 			int child_pos = node->findPosition();
 			int parent_pos = node->parent->findPosition();
 
-			cout << child_pos << " x " << parent_pos << endl;
 			// left_left case:
 			if ((child_pos == 0) && (parent_pos == 0))
 			{

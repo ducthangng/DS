@@ -16,16 +16,19 @@ using namespace std;
 // Retrive cost: O(1). Hashtable.list[(key.hashed.string)] = value. (linkedlist)
 
 // Chaining Hashtable
+
 class HashTable
 {
 private:
-	LinkList list[110];
-	int number_of_entry;
+	LinkedList *list[110];
 
 public:
 	HashTable()
 	{
-		this->number_of_entry = 0;
+		for (int i = 0; i < 101; i++)
+		{
+			this->list[i] = new LinkedList("");
+		}
 	}
 
 	// Hash Function: convert string to int.
@@ -39,43 +42,46 @@ public:
 		return h % C;
 	}
 
-	void addEntry(Node entry)
+	void addEntry(string key, string value)
 	{
-		unsigned hashed_key = this->hash_str(entry.getKey());
-		this->list[hashed_key].InsertLast(&entry);
-	}
 
-	void remove(Node entry)
-	{
-		unsigned hashed_key = this->hash_str(entry.getKey());
-		this->list[hashed_key].Remove(entry.getValue());
-	}
-
-	void search(string key)
-	{
 		unsigned hashed_key = this->hash_str(key);
 
-		string value = this->list[hashed_key].search(key);
-
-		if (value.length() == 0)
+		string cvalue = this->list[hashed_key]->getValue();
+		if (cvalue == "")
 		{
-			cout << "no entries found" << endl;
+			this->list[hashed_key]->push(value);
+			return;
 		}
 
-		this->list[hashed_key].print();
+		this->list[hashed_key]->push_back(value);
+		return;
 	}
 
-	void print()
+	void remove(string key, string value)
 	{
-		for (int i = 0; i < 110; i++)
+		unsigned hashed_key = this->hash_str(key);
+		this->list[hashed_key]->remove(value);
+	}
+
+	void search(string key, string value)
+	{
+		unsigned hashed_key = this->hash_str(key);
+		LinkedList *ll = this->list[hashed_key]->search(key);
+		if (ll == nullptr)
 		{
-			if ((this->list[i].firstKey().length()) != 0)
-			{
-				unsigned hashed_key = this->hash_str(list[i].firstKey());
-				cout << "hashed_key: " << hashed_key << endl;
-				this->list[i].print();
-			}
+			cout << "no record found" << endl;
 		}
+
+		this->list[hashed_key]->print();
+	}
+
+	void print(string key)
+	{
+		unsigned hashed_key = this->hash_str(key);
+		cout << key << " :";
+		this->list[hashed_key]->print();
+		cout << endl;
 	}
 };
 
@@ -178,32 +184,16 @@ public:
 
 int main()
 {
-	// HashTablev1 or HashTable does not have dynamic creation. It is prepered to used the hashtable v2.
-	// Node thang("ducthang", "20");
-	// Node replication_1("ducthang", "20");
-	// Node replication_2("ducthang", "19");
-	// Node replication_3("ducthang_3", "20");
-	// Node replication_4("linhdan_1", "12");
-	// Node replication_5("god", "100");
-	// Node replication_6("bless", "12121");
-
-	// HashTable hash;
-
-	// hash.addEntry(thang);
-	// hash.addEntry(replication_1);
-	// hash.addEntry(replication_2);
-	// hash.addEntry(replication_3);
-	// hash.addEntry(replication_4);
-	// hash.addEntry(replication_5);
-	// hash.addEntry(replication_6);
-
-	// // hash.search("ducthang");
-	// hash.print();
-
-	// cout << "delete ducthang" << endl;
-	// hash.remove(thang);
-	// hash.remove(thang);
-	// hash.print();
+	// HashTable ht;
+	// ht.addEntry("hfekasnlaskeffefeaew", "read");
+	// ht.addEntry("hfekasnlaskeffefeaew", "write");
+	// ht.addEntry("ducthang", "execute");
+	// ht.addEntry("ducthang", "write");
+	// ht.addEntry("ironman", "read");
+	// ht.addEntry("ironman", "share");
+	// ht.print("hfekasnlaskeffefeaew");
+	// ht.print("ducthang");
+	// ht.print("ironman");
 
 	HashTablev2 hashv2;
 

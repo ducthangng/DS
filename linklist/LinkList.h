@@ -1,54 +1,21 @@
 #include <iostream>
 #include <algorithm>
-#include <string.h>
 
 using namespace std;
 
-class Node
+class LinkedList
 {
 private:
+	LinkedList *next;
+	LinkedList *before;
 	string value;
-	Node *after;
-	Node *before;
 
 public:
-	Node(){};
-
-	Node(string value)
+	LinkedList(string value)
 	{
+		this->next = nullptr;
+		this->before = nullptr;
 		this->value = value;
-		this->after = NULL;
-		this->before = NULL;
-	}
-
-	void addAfter(Node *node)
-	{
-		this->after = node;
-	}
-
-	void addBefore(Node *node)
-	{
-		this->before = node;
-	}
-
-	void removeAfter()
-	{
-		this->after = NULL;
-	}
-
-	void removeBefore()
-	{
-		this->before = NULL;
-	}
-
-	Node *afterNode()
-	{
-		return this->after;
-	}
-
-	Node *beforeNode()
-	{
-		return this->before;
 	}
 
 	string getValue()
@@ -56,111 +23,99 @@ public:
 		return this->value;
 	}
 
-	void print()
+	void push(string value)
 	{
-		cout << "current value: " << this->value << endl;
-	}
-};
-
-class LinkList
-{
-private:
-	Node *firstNode;
-
-public:
-	LinkList()
-	{
-		this->firstNode = NULL;
+		this->value = value;
+		return;
 	}
 
-	void InsertLast(Node *node)
+	void push_back(string value)
 	{
-		if (this->firstNode == NULL)
+		if (this->next != nullptr)
 		{
-			this->firstNode = node;
+			this->next->push_back(value);
 			return;
 		}
 
-		Node *current_node = this->firstNode;
-		while (current_node->afterNode() != NULL)
-		{
-			current_node = current_node->afterNode();
-		}
-
-		current_node->addAfter(node);
+		this->next = new LinkedList(value);
+		this->next->before = this;
 	}
 
-	void InsertBefore(Node *node)
+	void push_front(string value)
 	{
-		if (this->firstNode == NULL)
+		if (this->before != nullptr)
 		{
-			this->firstNode = node;
+			this->before->push_front(value);
 			return;
 		}
 
-		node->addAfter(this->firstNode);
-		this->firstNode = node;
+		this->before = new LinkedList(value);
+		this->before->next = this;
 	}
 
-	void Remove(string keyword)
+	LinkedList *search(string value)
 	{
-		if (this->firstNode == NULL)
+		bool top = this->search2top(value);
+		bool bot = this->search2bot(value);
+
+		if ((top == true) || (bot == true))
 		{
-			cout << "No current node in list" << endl;
-			return;
+			return this;
 		}
 
-		Node *current = this->firstNode;
-		while (current != NULL)
-		{
-			string value = current->getValue();
-			if (value == keyword)
-			{
-				Node *afterNode = current->afterNode();
-				Node *beforeNode = current->beforeNode();
-
-				if (afterNode == NULL)
-				{
-					beforeNode->removeAfter();
-				}
-				else
-				{
-					afterNode->addBefore(beforeNode);
-					beforeNode->addAfter(afterNode);
-				}
-
-				return;
-			}
-
-			current = current->afterNode();
-		}
+		return nullptr;
 	}
 
-	Node *search(string keyword)
+	LinkedList *search2top(string value)
 	{
-		Node *current = this->firstNode;
-		while (current != NULL)
+		if (this->value != value)
 		{
-			if (current->getValue() == keyword)
-			{
-				return current;
-			}
-			current = current->afterNode();
+			return this->next == nullptr ? nullptr : this->next->search2top(value);
+		}
+		return this;
+	}
+
+	LinkedList *search2bot(string value)
+	{
+		if (this->value != value)
+		{
+			return this->next == nullptr ? nullptr : this->next->search2bot(value);
+		}
+		return this;
+	}
+
+	LinkedList *searchtop()
+	{
+		if (this->before != nullptr)
+		{
+			return this->before->searchtop();
 		}
 
-		return NULL;
+		return this;
+	}
+
+	void remove(string value)
+	{
+		LinkedList *currentNode = this->search(value);
+		if (currentNode != nullptr)
+		{
+			currentNode->before->next = currentNode->next;
+			currentNode->next->before = currentNode->before;
+			delete currentNode;
+		}
 	}
 
 	void print()
 	{
-		Node *current = this->firstNode;
-		int count = 0;
-		while (current != NULL)
+		LinkedList *node = this->searchtop();
+
+		cout << node->getValue() << " ";
+		while (node->next != nullptr)
 		{
-			string value = current->getValue();
-			cout << "Node :" << count << " value: " << value << endl;
-			current = current->afterNode();
-			count += 1;
+			node = node->next;
+			cout << node->getValue() << " ";
 		}
+
+		cout << endl;
 	}
 };

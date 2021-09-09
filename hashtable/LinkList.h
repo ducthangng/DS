@@ -1,56 +1,21 @@
 #include <iostream>
 #include <algorithm>
-#include <string.h>
 
 using namespace std;
 
-class Node
+class LinkedList
 {
 private:
-	string key;
+	LinkedList *next;
+	LinkedList *before;
 	string value;
-	Node *after;
-	Node *before;
 
 public:
-	Node(){};
-
-	Node(string key, string value)
+	LinkedList(string value)
 	{
-		this->key = key;
+		this->next = nullptr;
+		this->before = nullptr;
 		this->value = value;
-		this->after = NULL;
-		this->before = NULL;
-	}
-
-	void addAfter(Node *node)
-	{
-		this->after = node;
-	}
-
-	void addBefore(Node *node)
-	{
-		this->before = node;
-	}
-
-	void removeAfter()
-	{
-		this->after = NULL;
-	}
-
-	void removeBefore()
-	{
-		this->before = NULL;
-	}
-
-	Node *afterNode()
-	{
-		return this->after;
-	}
-
-	Node *beforeNode()
-	{
-		return this->before;
 	}
 
 	string getValue()
@@ -58,127 +23,99 @@ public:
 		return this->value;
 	}
 
-	string getKey()
+	void push(string value)
 	{
-		return this->key;
+		this->value = value;
+		return;
+	}
+
+	void push_back(string value)
+	{
+		if (this->next != nullptr)
+		{
+			this->next->push_back(value);
+			return;
+		}
+
+		this->next = new LinkedList(value);
+		this->next->before = this;
+	}
+
+	void push_front(string value)
+	{
+		if (this->before != nullptr)
+		{
+			this->before->push_front(value);
+			return;
+		}
+
+		this->before = new LinkedList(value);
+		this->before->next = this;
+	}
+
+	LinkedList *search(string value)
+	{
+		bool top = this->search2top(value);
+		bool bot = this->search2bot(value);
+
+		if ((top == true) || (bot == true))
+		{
+			return this;
+		}
+
+		return nullptr;
+	}
+
+	LinkedList *search2top(string value)
+	{
+		if (this->value != value)
+		{
+			return this->next == nullptr ? nullptr : this->next->search2top(value);
+		}
+		return this;
+	}
+
+	LinkedList *search2bot(string value)
+	{
+		if (this->value != value)
+		{
+			return this->next == nullptr ? nullptr : this->next->search2bot(value);
+		}
+		return this;
+	}
+
+	LinkedList *searchtop()
+	{
+		if (this->before != nullptr)
+		{
+			return this->before->searchtop();
+		}
+
+		return this;
+	}
+
+	void remove(string value)
+	{
+		LinkedList *currentNode = this->search(value);
+		if (currentNode != nullptr)
+		{
+			currentNode->before->next = currentNode->next;
+			currentNode->next->before = currentNode->before;
+			delete currentNode;
+		}
 	}
 
 	void print()
 	{
-		cout << "key - value: " << this->key << "-" << this->value << endl;
-	}
-};
+		LinkedList *node = this->searchtop();
 
-class LinkList
-{
-private:
-	Node *firstNode;
-
-public:
-	LinkList()
-	{
-		this->firstNode = NULL;
-	}
-
-	string firstKey()
-	{
-		if (this->firstNode == nullptr)
+		cout << node->getValue() << " ";
+		while (node->next != nullptr)
 		{
-			return "";
+			node = node->next;
+			cout << node->getValue() << " ";
 		}
 
-		return this->firstNode->getKey();
-	}
-
-	void InsertLast(Node *node)
-	{
-		if (this->firstNode == NULL)
-		{
-			this->firstNode = node;
-			return;
-		}
-
-		Node *current_node = this->firstNode;
-		while (current_node->afterNode() != NULL)
-		{
-			current_node = current_node->afterNode();
-		}
-
-		current_node->addAfter(node);
-	}
-
-	void InsertBefore(Node *node)
-	{
-		if (this->firstNode == NULL)
-		{
-			this->firstNode = node;
-			return;
-		}
-
-		node->addAfter(this->firstNode);
-		this->firstNode = node;
-	}
-
-	void Remove(string keyword)
-	{
-		if (this->firstNode == NULL)
-		{
-			cout << "No current node in list" << endl;
-			return;
-		}
-
-		Node *current = this->firstNode;
-		while (current != NULL)
-		{
-			string value = current->getValue();
-			if (value == keyword)
-			{
-				if ((current->afterNode() == nullptr) && (current->beforeNode() != nullptr))
-				{
-					current->beforeNode()->removeAfter();
-					return;
-				}
-
-				if (current->beforeNode() == nullptr)
-				{
-					this->firstNode = current->afterNode();
-					return;
-				}
-
-				current->beforeNode()->addAfter(current->afterNode());
-				return;
-			}
-
-			current = current->afterNode();
-		}
-	}
-
-	string search(string keyword)
-	{
-		int count = 0;
-
-		Node *current = this->firstNode;
-		while (current != NULL)
-		{
-			if (current->getValue() == keyword)
-			{
-				return current->getValue();
-			}
-			current = current->afterNode();
-		}
-
-		return "";
-	}
-
-	void print()
-	{
-		Node *current = this->firstNode;
-		int count = 0;
-		while (current != NULL)
-		{
-			current->print();
-			current = current->afterNode();
-			count += 1;
-		}
+		cout << endl;
 	}
 };
