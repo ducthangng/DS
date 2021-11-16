@@ -1,13 +1,11 @@
 package heap
 
-import "fmt"
-
 type Node struct {
 	Hash  string
 	Value int
 }
 
-func NewNode(value int) Node {
+func NewNode(value int, hash string) Node {
 	return Node{
 		Value: value,
 	}
@@ -86,17 +84,13 @@ func (t *MinHeapTree) ReverseHeapify(root int) {
 	}
 }
 
-func (t *MinHeapTree) Display() {
-	for i, v := range t.Entries {
-		if i == 0 {
-			continue
-		}
-
-		fmt.Printf("%v ", v)
-	}
+func (t *MinHeapTree) Retrieve() []Node {
+	return t.Entries[1:]
 }
 
-func (t *MinHeapTree) Push(node Node) {
+func (t *MinHeapTree) Push(val int, hash string) {
+	node := NewNode(val, hash)
+
 	if t.ToBeInserted >= len(t.Entries) {
 		t.Entries = append(t.Entries, make([]Node, t.ToBeInserted*2)...)
 	}
@@ -115,28 +109,3 @@ func (t *MinHeapTree) Pop() {
 	t.ToBeInserted--
 	t.ReverseHeapify(1)
 }
-
-// func main() {
-// 	heap := NewHeapTree()
-
-// 	heap.Push(NewNode(5))
-// 	heap.Push(NewNode(6))
-// 	heap.Push(NewNode(10))
-// 	heap.Push(NewNode(12))
-// 	heap.Push(NewNode(19))
-// 	heap.Push(NewNode(9))
-// 	heap.Push(NewNode(4))
-// 	heap.Push(NewNode(7))
-// 	heap.Push(NewNode(16))
-// 	heap.Push(NewNode(0))
-// 	heap.Push(NewNode(1))
-
-// 	heap.Pop()
-// 	heap.Pop()
-// 	heap.Pop()
-
-// 	fmt.Println(heap.ToBeInserted)
-
-// 	heap.Display()
-
-// }

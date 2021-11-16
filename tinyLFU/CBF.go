@@ -10,7 +10,6 @@ var (
 // Its job is to mantain the frequency of the operation and select the victim.
 type CBF struct {
 	Entries map[int]int
-	LFU     *LFU
 }
 
 func NewCounter() *CBF {

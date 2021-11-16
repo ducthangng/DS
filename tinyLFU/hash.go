@@ -6,6 +6,10 @@ import (
 	"hash/fnv"
 )
 
+const (
+	size = 2
+)
+
 func Hash32(val []byte) int {
 	hashfunc := fnv.New32a()
 	hashfunc.Write(val)
