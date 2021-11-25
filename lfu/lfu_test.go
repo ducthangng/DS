@@ -1,9 +1,12 @@
 package lfu
 
 import (
+	"log"
 	"math/rand"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 // RandomNumber returns a random number.
@@ -22,44 +25,59 @@ func RandomString(len int) string {
 	return string(bytes)
 }
 
-func BenchmarkLFUWithHash(b *testing.B) {
+func TestLFU(t *testing.T) {
 	rand.Seed(time.Now().UTC().UnixNano())
 
+	lfus := NewLFU()
 	// lfu := NewLFU()
-	lfus := NewLFUS()
 
-	for i := 0; i <= b.N; i++ {
-		key := RandomString(8)
+	keys := []string{}
 
-		// if err := lfu.add(key, key); err != nil {
-		// 	panic(err)
-		// }
+	for i := 0; i < 100; i++ {
+		keys = append(keys, RandomString(8))
+	}
 
-		if err := lfus.add(key, key); err != nil {
-			panic(err)
+	for i := 0; i < 10000; i++ {
+		err := lfus.add(keys[i%100], keys[i%100])
+		require.NoError(t, err)
+	}
+
+	for i := 0; i < 10000; i++ {
+		val, err := lfus.get(keys[i%100])
+		require.NoError(t, err)
+		if val != nil {
+			require.Equal(t, val.(string), keys[i%100])
 		}
 	}
 
 }
 
-/*
-LFUS
-goos: darwin
-goarch: amd64
-pkg: lfu
-cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
-BenchmarkLFUWithHash-12    	  254838	     70137 ns/op	  513891 B/op	       5 allocs/op
-PASS
-ok  	lfu	18.414s
-*/
+func BenchmarkLFU_Int(b *testing.B) {
+	rand.Seed(time.Now().UTC().UnixNano())
+
+	lfus := NewLFU()
+	keys := []string{}
+
+	for i := 0; i < 100; i++ {
+		keys = append(keys, RandomString(8))
+	}
+
+	for i := 0; i <= b.N; i++ {
+		err := lfus.add(keys[i%100], "random_value_to_retrieve")
+		if err != nil {
+			log.Println(err) // return full?
+		}
+
+		_, _ = lfus.get(keys[(i+rand.Intn(100))%100])
+	}
+}
 
 /*
-LFU
 goos: darwin
 goarch: amd64
-pkg: lfu
+pkg: algo/lfu
 cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
-BenchmarkLFUWithHash-12    	  281365	     78179 ns/op	  566937 B/op	       5 allocs/op
+BenchmarkLFU_Int-12    	  341947	     79766 ns/op	  687923 B/op	       2 allocs/op
 PASS
-ok  	lfu	22.483s
+ok  	algo/lfu	28.159s
 */

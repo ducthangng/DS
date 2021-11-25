@@ -13,6 +13,12 @@ func hash(s string) uint32 {
 	return (h.Sum32())
 }
 
+func hash64(s string) uint64 {
+	h := fnv.New64a()
+	h.Write([]byte(s))
+	return (h.Sum64())
+}
+
 func hash_string(key string) string {
 	h := sha1.New()
 	h.Write([]byte(key))

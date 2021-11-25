@@ -1,9 +1,5 @@
 package lfu
 
-import (
-	"errors"
-)
-
 const (
 	size = 2
 )
@@ -110,7 +106,7 @@ func (l *LFU) get(key string) (interface{}, error) {
 		return l.Memory[hash], nil
 	}
 
-	return nil, errors.New("do not exist")
+	return nil, nil
 }
 
 func (l *LFU) hit(key string) {

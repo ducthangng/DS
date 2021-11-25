@@ -1,13 +1,14 @@
 package heap
 
 type Node struct {
-	Hash  string
+	Hash  interface{}
 	Value int
 }
 
-func NewNode(value int, hash string) Node {
+func NewNode(value int, hash interface{}) Node {
 	return Node{
 		Value: value,
+		Hash:  hash,
 	}
 }
 
@@ -88,7 +89,7 @@ func (t *MinHeapTree) Retrieve() []Node {
 	return t.Entries[1:]
 }
 
-func (t *MinHeapTree) Push(val int, hash string) {
+func (t *MinHeapTree) Push(val int, hash interface{}) {
 	node := NewNode(val, hash)
 
 	if t.ToBeInserted >= len(t.Entries) {
@@ -102,10 +103,46 @@ func (t *MinHeapTree) Push(val int, hash string) {
 }
 
 // Standard operation is to delete the root
-func (t *MinHeapTree) Pop() {
+func (t *MinHeapTree) Pop() (hash interface{}) {
+	if len(t.Entries) == 0 {
+		return nil
+	}
+
+	hash = t.Entries[1]
 	t.Entries[1] = t.Entries[t.ToBeInserted-1]
 	t.Entries = t.Entries[:t.ToBeInserted-1]
 
 	t.ToBeInserted--
 	t.ReverseHeapify(1)
+
+	return hash
+}
+
+// GetPopList returns the lists of going-to-pop elements
+func (t *MinHeapTree) GetPopList(quantity int) (list []interface{}) {
+	if len(t.Entries) == 0 {
+		return nil
+	}
+
+	if quantity > len(t.Entries) {
+		quantity = len(t.Entries)
+	}
+
+	for i := 1; i <= quantity; i++ {
+		list = append(list, t.Entries[i].Hash)
+	}
+
+	return list
+}
+
+// Improvisation
+func (t *MinHeapTree) Increment(hashVal interface{}) {
+	for i := 0; i < len(t.Entries); i++ {
+		if t.Entries[i].Hash == hashVal {
+			t.Entries[i].Value++
+			t.ReverseHeapify(i)
+
+			return
+		}
+	}
 }
