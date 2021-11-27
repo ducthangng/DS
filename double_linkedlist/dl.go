@@ -2,9 +2,9 @@ package double_linkedlist
 
 // Doubly linkedlist to manage the list
 type List struct {
+	Length int
 	Root   *Node
 	Tail   *Node
-	Length int
 }
 
 func NewList() *List {
@@ -19,6 +19,9 @@ type Node struct {
 	Value    int
 	NextNode *Node
 	PrevNode *Node
+	NodeList *List
+
+	FrequencyNode *Node
 }
 
 func NewNode(val int, p *Node, n *Node) *Node {
@@ -29,22 +32,19 @@ func NewNode(val int, p *Node, n *Node) *Node {
 	}
 }
 
-// func (node *Node) Empty() {
-// 	node.NextNode = nil
-// 	node.PrevNode = nil
-// 	node.Value = 0
-// }
-
+// Push to end.
 func (node *Node) Push(val int) *Node {
 	node.NextNode = NewNode(val, node, nil)
 	return node.NextNode
 }
 
+// Append to first
 func (node *Node) Append(val int) *Node {
 	node.PrevNode = NewNode(val, nil, node)
 	return node.PrevNode
 }
 
+// Pop is pop the node out of the linkedlist, and empty the node for GC.
 func (node *Node) Pop() {
 	prv := node.PrevNode
 	nxt := node.NextNode
@@ -60,27 +60,34 @@ func (node *Node) Pop() {
 	node = nil
 }
 
-func (list *List) Push(val int) {
+// Push the node to the end of the list
+func (list *List) Push(val int) *Node {
 	if list.Tail == nil {
 		node := NewNode(val, nil, nil)
 
 		list.Root = node
 		list.Tail = node
 
-		return
+		list.Length++
+
+		return node
 	}
 
 	list.Tail.Push(val)
 	list.Tail = list.Tail.NextNode
 	list.Length++
+
+	return list.Tail
 }
 
+// Append the front of the list
 func (list *List) Append(val int) {
 	list.Root.Append(val)
 	list.Root = list.Root.PrevNode
 	list.Length++
 }
 
+// Pop the given node out of list
 func (list *List) Pop(node *Node) {
 	if node == list.Tail {
 		list.Tail = node.PrevNode
